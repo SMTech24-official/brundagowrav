@@ -6,8 +6,7 @@ import SideBar from "./navigationBar/SiderBar";
 import { navLink } from "./Navlink";
 
 const DashboardLayout = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const user = null;
+  // const user = {};
   const [isOpen, setIsOpen] = useState(false);
   const [isShort, setIsShort] = useState(true);
 

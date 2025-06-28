@@ -1,10 +1,6 @@
 import { useState } from "react"; // Import useState for managing dropdown state
+import { FiSidebar } from "react-icons/fi";
 import { IoLogOut } from "react-icons/io5";
-import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
-import {
-  MdOutlineKeyboardArrowDown,
-  MdOutlineKeyboardArrowUp,
-} from "react-icons/md";
 import { Link, useLocation } from "react-router-dom"; // Use react-router-dom instead of react-router
 import type { NavLink } from "../types";
 
@@ -101,11 +97,7 @@ export default function MainNavLink({
           {hasSubItems && isShort && (
             <span className="text-sm">
               {/* Fixed arrow direction */}
-              {openDropdown === link.name ? (
-                <MdOutlineKeyboardArrowUp />
-              ) : (
-                <MdOutlineKeyboardArrowDown />
-              )}
+              {openDropdown === link.name ? <FiSidebar /> : <FiSidebar />}
             </span>
           )}
         </div>
@@ -156,20 +148,20 @@ export default function MainNavLink({
       <div className="lg:block absolute top-16 right-0 hidden z-50">
         <button
           className={`rounded-md  transition-colors w-fit shadow-md px-3 z-50 ${
-            dark ? "bg-primary" : "bg-white hover:bg-gray-100"
+            dark ? "text-white" : "bg-white hover:bg-gray-100"
           }`}
           onClick={() => setIsShort(!isShort)}
           aria-label="Toggle menu"
         >
           {isShort ? (
-            <LuChevronsRight
+            <FiSidebar
               className={`h-6 w-6  z-50 ${
                 dark ? "hover:text-white" : "hover:text-primary"
               }`}
             />
           ) : (
-            <LuChevronsLeft
-              className={`h-6 w-6  z-50 ${
+            <FiSidebar
+              className={`h-6 w-6  z-50 rotate-180 ${
                 dark ? "hover:text-white" : "hover:text-primary"
               }`}
             />
