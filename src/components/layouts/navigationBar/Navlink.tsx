@@ -3,6 +3,10 @@ import { FiSidebar } from "react-icons/fi";
 import { IoLogOut } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom"; // Use react-router-dom instead of react-router
 import type { NavLink } from "../types";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../redux/hooks";
+import { toast } from "sonner";
+import { logOut } from "../../../redux/features/auth/userCredentialSlice";
 
 interface MainNavLinkProps {
   navLink: NavLink[];
@@ -20,7 +24,9 @@ export default function MainNavLink({
   dark = false,
 }: MainNavLinkProps) {
   const location = useLocation();
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null); // Track which dropdown is open
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Check if a link is active
   const isActive = (href: string) => {
@@ -28,21 +34,22 @@ export default function MainNavLink({
     const cleanPathname = location.pathname.split("?")[0];
 
     // Exact match for dashboard routes
-    if (cleanHref === "/dashboard") {
-      return cleanPathname === "/dashboard";
-    }
-    if (cleanHref === "/admin-dashboard") {
-      return cleanPathname === "/admin-dashboard";
-    }
+    // if (cleanHref === "/dashboard") {
+    //   return cleanPathname === "/dashboard";
+    // }
+    // if (cleanHref === "/admin-dashboard") {
+    //   return cleanPathname === "/admin-dashboard";
+    // }
 
     // Partial match for other routes
     return cleanPathname.startsWith(cleanHref);
   };
 
   // Handle logout
-  const handleLogout = async () => {
-    // Add your logout logic here
-    console.log("Logging out...");
+  const handleLogout = () => {
+    dispatch(logOut());
+    toast.success("You are logged out successfully");
+    navigate("/");
   };
 
   // Toggle dropdown

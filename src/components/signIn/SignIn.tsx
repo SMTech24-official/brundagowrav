@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LuEye, LuEyeOff } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useDispatch } from "react-redux";
+import { useLoginUserMutation } from "../../redux/api/auth/authAPi";
+import {
+  setLoginEmail,
+  setLoginPassword,
+} from "../../redux/features/auth/loginSlice";
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -24,6 +31,9 @@ type FormValues = z.infer<typeof formSchema>;
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+
   // Use React Hook Form with Zod resolver
   const {
     register,
@@ -38,21 +48,31 @@ export default function SignInPage() {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Form Data:", data);
-    const promise = () =>
-      new Promise((resolve) =>
-        setTimeout(() => resolve({ name: "Sonner" }), 2000)
-      );
+  const onSubmit = async (data: FormValues) => {
+    // Update Redux store with form data
+    dispatch(setLoginEmail(data.email));
+    dispatch(setLoginPassword(data.password));
 
-    toast.promise(promise, {
-      loading: "Loading...",
-      success: () => {
-        return `WellCome back admin`;
-      },
-      error: "Error",
-    });
-    navigate("/my-ai-assistant");
+    try {
+      const response = await loginUser({
+        email: data.email,
+        password: data.password,
+      }).unwrap();
+
+      console.log(response);
+
+      toast.success("Welcome back!", {
+        description: `Logged in successfully as ${
+          response.data.email || "user"
+        }`,
+      });
+
+      navigate("/my-ai-assistant");
+    } catch (error: any) {
+      toast.error("Login failed", {
+        description: error?.data?.message || "Invalid email or password",
+      });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -117,13 +137,39 @@ export default function SignInPage() {
             )}
           </div>
 
+          {/* Remember Me Checkbox */}
+          <div className="flex items-center">
+            <input
+              id="rememberMe"
+              type="checkbox"
+              {...register("rememberMe")}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label
+              htmlFor="rememberMe"
+              className="ml-2 block text-sm text-gray-900"
+            >
+              Remember me
+            </label>
+          </div>
+
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full cursor-pointer bg-primary/80 text-white py-2 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            disabled={isLoading}
+            className={`w-full cursor-pointer bg-primary/80 text-white py-2 px-4 rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Log in
+            {isLoading ? "Logging in..." : "Log in"}
           </button>
+
+          <p className="text-xs text-center">
+            Don't have an account?{" "}
+            <span className="text-sm text-blue-400">
+              <Link to="/register">Sign Up</Link>
+            </span>
+          </p>
         </form>
       </div>
     </div>
