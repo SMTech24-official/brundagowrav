@@ -8,12 +8,11 @@ import {
   FetchArgs,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store";
 import {
   logOut,
-  setUser,
-  setUserToken,
+  setUserToken
 } from "../features/auth/userCredentialSlice";
+import { RootState } from "../store";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `http://172.252.13.71:5002/api`,

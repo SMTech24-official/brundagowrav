@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState } from "react";
 import Conversations from "./Conversations";
 import Header from "./Header";
@@ -27,7 +28,7 @@ function MainChat() {
   const ws = useRef<WebSocket | null>(null);
   const latestConversationId = useRef<string | null>(null);
   const [connected, setConnected] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [_sessionId, setSessionId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"All" | "Favorites" | "Scheduled">(
     "All"
   );

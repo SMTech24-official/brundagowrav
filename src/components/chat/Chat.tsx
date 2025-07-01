@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Conversations from "./Conversations";
 import Header from "./Header";
 import InputChat from "./InputChat";
@@ -19,6 +19,16 @@ function Chat() {
   const [activeTab, setActiveTab] = useState<"All" | "Favorites" | "Scheduled">(
     "All"
   );
+
+  const ws = useRef<WebSocket | null>(null); // ✅ create the ref
+
+  useEffect(() => {
+    ws.current = new WebSocket("ws://172.252.13.71:5002");
+    return () => {
+      ws.current?.close();
+    };
+  }, []);
+
   const [selectedConversation, setSelectedConversation] = useState<
     string | null
   >(null);
@@ -160,6 +170,7 @@ Automated workflow execution and monitoring`,
             sendMessage={sendMessage}
             setInputValue={setInputValue}
             tokenCount={tokenCount}
+            ws={ws}
           />
         </main>
       </div>
